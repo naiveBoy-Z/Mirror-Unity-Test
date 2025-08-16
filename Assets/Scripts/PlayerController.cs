@@ -8,20 +8,20 @@ public class PlayerController : NetworkBehaviour
     [Header("XR Device Scripts")]
     public ViveHMD hmdScripts;
     public ViveController leftController, rightController;
-    public UltimateTracker waistTracker, leftLegTracker, rightLegTracker;
+    public TrackerPoseIK waistPose, leftLegPose, rightLegPose;
     
 
     public void ReferIkObjectToReference(List<GameObject> ikObjects)
     {
-        waistTracker.target = ikObjects[0];
+        waistPose.target = ikObjects[0];
         hmdScripts.target = ikObjects[1];
         leftController.target = ikObjects[2];
         leftController.hint = ikObjects[3];
         rightController.target = ikObjects[4];
         rightController.hint = ikObjects[5];
-        leftLegTracker.target = ikObjects[6];
-        leftLegTracker.hint = ikObjects[7];
-        rightLegTracker.target = ikObjects[8];
-        rightLegTracker.hint = ikObjects[9];
+        leftLegPose.target = ikObjects[6];
+        leftLegPose.hint = ikObjects[7];
+        rightLegPose.target = ikObjects[8];
+        rightLegPose.hint = ikObjects[9];
     }
 }

@@ -785,6 +785,7 @@ GameObject:
   - component: {fileID: 6733269603149627255}
   - component: {fileID: 7821081859720218399}
   - component: {fileID: 3250613306769899783}
+  - component: {fileID: 5804272490186762328}
   m_Layer: 0
   m_Name: Waist Ultimate Tracker
   m_TagString: Untagged
@@ -822,10 +823,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   trackerRole: 63
-  target: {fileID: 0}
-  hint: {fileID: 2400183019762543204}
-  targetReference: {fileID: 2400183019762543204}
-  hintReference: {fileID: 8329700656910914368}
 --- !u!114 &3250613306769899783
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -860,6 +857,23 @@ MonoBehaviour:
   positionSensitivity: 0.01
   rotationSensitivity: 0.01
   scaleSensitivity: 0.01
+--- !u!114 &5804272490186762328
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1845817275352505190}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f087f4af41be62449bd0f481fa7603ad, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  isWaistTracker: 1
+  target: {fileID: 0}
+  hint: {fileID: 0}
+  targetReference: {fileID: 2400183019762543204}
+  hintReference: {fileID: 8329700656910914368}
 --- !u!1 &2391521489504821752
 GameObject:
   m_ObjectHideFlags: 0
@@ -1652,13 +1666,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2663369575351774489}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.33527896, y: 0, z: 0, w: 0.94211894}
+  m_LocalRotation: {x: -0.46174863, y: 0, z: 0, w: 0.8870109}
   m_LocalPosition: {x: 0, y: -0.05, z: -0.05}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 8061478360853111776}
-  m_LocalEulerAnglesHint: {x: -39.179, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: -55, y: 0, z: 0}
 --- !u!1 &2716087880015765820
 GameObject:
   m_ObjectHideFlags: 0
@@ -1775,9 +1789,9 @@ MonoBehaviour:
   hmdScripts: {fileID: 719935414743975400}
   leftController: {fileID: 6322800417956132416}
   rightController: {fileID: 7588566426126306998}
-  waistTracker: {fileID: 7821081859720218399}
-  leftLegTracker: {fileID: 7317626391678677240}
-  rightLegTracker: {fileID: 7381367762026024409}
+  waistPose: {fileID: 5804272490186762328}
+  leftLegPose: {fileID: 8567811411380821315}
+  rightLegPose: {fileID: 3064674943847113023}
 --- !u!114 &2249042248232788213
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1813,9 +1827,9 @@ GameObject:
   - component: {fileID: 5818859250383220094}
   - component: {fileID: 4364096471182248749}
   - component: {fileID: 1126551039553937700}
+  - component: {fileID: 7167826569268703407}
   - component: {fileID: 719935414743975400}
   - component: {fileID: 5303181956233209812}
-  - component: {fileID: 7167826569268703407}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -1898,54 +1912,6 @@ AudioListener:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4872006381160323683}
   m_Enabled: 1
---- !u!114 &719935414743975400
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4872006381160323683}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1af944922583c5f4484afd4d45051950, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  target: {fileID: 0}
-  targetReference: {fileID: 7977005568210043603}
---- !u!114 &5303181956233209812
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4872006381160323683}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a553cb17010b2403e8523b558bffbc14, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  syncDirection: 1
-  syncMode: 0
-  syncInterval: 0
-  target: {fileID: 5818859250383220094}
-  syncPosition: 1
-  syncRotation: 1
-  syncScale: 0
-  onlySyncOnChange: 1
-  compressRotation: 1
-  interpolatePosition: 1
-  interpolateRotation: 1
-  interpolateScale: 1
-  coordinateSpace: 0
-  timelineOffset: 1
-  showGizmos: 0
-  showOverlay: 0
-  overlayColor: {r: 0, g: 0, b: 0, a: 0.5}
-  bufferResetMultiplier: 3
-  useFixedUpdate: 0
-  positionSensitivity: 0.01
-  rotationSensitivity: 0.01
-  scaleSensitivity: 0.01
 --- !u!114 &7167826569268703407
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2039,6 +2005,54 @@ MonoBehaviour:
     m_Interactions: 
     m_SingletonActionBindings: []
     m_Flags: 0
+--- !u!114 &719935414743975400
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4872006381160323683}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1af944922583c5f4484afd4d45051950, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  target: {fileID: 0}
+  targetReference: {fileID: 7977005568210043603}
+--- !u!114 &5303181956233209812
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4872006381160323683}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a553cb17010b2403e8523b558bffbc14, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncDirection: 1
+  syncMode: 0
+  syncInterval: 0
+  target: {fileID: 5818859250383220094}
+  syncPosition: 1
+  syncRotation: 1
+  syncScale: 0
+  onlySyncOnChange: 1
+  compressRotation: 1
+  interpolatePosition: 1
+  interpolateRotation: 1
+  interpolateScale: 1
+  coordinateSpace: 0
+  timelineOffset: 1
+  showGizmos: 0
+  showOverlay: 0
+  overlayColor: {r: 0, g: 0, b: 0, a: 0.5}
+  bufferResetMultiplier: 3
+  useFixedUpdate: 0
+  positionSensitivity: 0.01
+  rotationSensitivity: 0.01
+  scaleSensitivity: 0.01
 --- !u!1 &5535501896512316129
 GameObject:
   m_ObjectHideFlags: 0
@@ -2050,6 +2064,7 @@ GameObject:
   - component: {fileID: 7788145386585882382}
   - component: {fileID: 7381367762026024409}
   - component: {fileID: 7131227931992565477}
+  - component: {fileID: 3064674943847113023}
   m_Layer: 0
   m_Name: Right Leg Ultimate Tracker
   m_TagString: Untagged
@@ -2087,10 +2102,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   trackerRole: 41
-  target: {fileID: 0}
-  hint: {fileID: 0}
-  targetReference: {fileID: 5810216470253103117}
-  hintReference: {fileID: 7065392094645355489}
 --- !u!114 &7131227931992565477
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2125,6 +2136,23 @@ MonoBehaviour:
   positionSensitivity: 0.01
   rotationSensitivity: 0.01
   scaleSensitivity: 0.01
+--- !u!114 &3064674943847113023
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5535501896512316129}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f087f4af41be62449bd0f481fa7603ad, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  isWaistTracker: 0
+  target: {fileID: 0}
+  hint: {fileID: 0}
+  targetReference: {fileID: 5810216470253103117}
+  hintReference: {fileID: 7065392094645355489}
 --- !u!1 &5810216470253103117
 GameObject:
   m_ObjectHideFlags: 0
@@ -2149,13 +2177,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5810216470253103117}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.33527896, y: 0, z: 0, w: 0.94211894}
+  m_LocalRotation: {x: -0.46174863, y: 0, z: 0, w: 0.8870109}
   m_LocalPosition: {x: 0, y: -0.05, z: -0.05}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 7788145386585882382}
-  m_LocalEulerAnglesHint: {x: -39.179, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: -55, y: 0, z: 0}
 --- !u!1 &5888314350171602577
 GameObject:
   m_ObjectHideFlags: 0
@@ -2167,6 +2195,7 @@ GameObject:
   - component: {fileID: 8061478360853111776}
   - component: {fileID: 7317626391678677240}
   - component: {fileID: 8862126929652288709}
+  - component: {fileID: 8567811411380821315}
   m_Layer: 0
   m_Name: Left Leg Ultimate Tracker
   m_TagString: Untagged
@@ -2204,10 +2233,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   trackerRole: 56
-  target: {fileID: 0}
-  hint: {fileID: 0}
-  targetReference: {fileID: 2663369575351774489}
-  hintReference: {fileID: 7714614716716871019}
 --- !u!114 &8862126929652288709
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2242,6 +2267,23 @@ MonoBehaviour:
   positionSensitivity: 0.01
   rotationSensitivity: 0.01
   scaleSensitivity: 0.01
+--- !u!114 &8567811411380821315
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5888314350171602577}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f087f4af41be62449bd0f481fa7603ad, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  isWaistTracker: 0
+  target: {fileID: 0}
+  hint: {fileID: 0}
+  targetReference: {fileID: 2663369575351774489}
+  hintReference: {fileID: 7714614716716871019}
 --- !u!1 &6880239987863965387
 GameObject:
   m_ObjectHideFlags: 0

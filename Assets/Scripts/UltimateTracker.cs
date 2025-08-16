@@ -1,9 +1,5 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using Wave.OpenXR;
-using Wave.Essence.Tracker;
-using TMPro;
 
 
 public enum UltimateTrackerRole
@@ -17,22 +13,13 @@ public enum UltimateTrackerRole
 public class UltimateTracker : MonoBehaviour
 {
     public UltimateTrackerRole trackerRole = UltimateTrackerRole.Waist;
-    [Header("IK Source Object")]
-    public GameObject target;
-    public GameObject hint;
-    [Header("IK Object Reference")]
-    public GameObject targetReference;
-    public GameObject hintReference;
 
     InputDeviceTracker.TrackerId trackerId = InputDeviceTracker.TrackerId.Tracker1;
-    bool completeCalibrating;
     Vector3 position;
     Quaternion rotation;
 
     void Start()
     {
-        completeCalibrating = false;
-
         foreach (InputDeviceTracker.TrackerId id in System.Enum.GetValues(typeof(InputDeviceTracker.TrackerId)))
         {
             if ((int)InputDeviceTracker.GetRole(id) == (int)trackerRole &&
@@ -48,30 +35,15 @@ public class UltimateTracker : MonoBehaviour
 
     void Update()
     {
-        if (completeCalibrating)
+        if (InputDeviceTracker.GetPosition(trackerId, out position))
         {
-            if (InputDeviceTracker.GetPosition(trackerId, out position))
-            {
-                transform.localPosition = position;
-                target.transform.position = targetReference.transform.position;
-                if (trackerRole != UltimateTrackerRole.Waist)
-                {
-                    hint.transform.position = hintReference.transform.position;
-                }
-            }
-
-            if (InputDeviceTracker.GetRotation(trackerId, out rotation))
-            {
-                transform.localRotation = rotation;
-                target.transform.rotation = targetReference.transform.rotation;
-            }
+            transform.localPosition = position;
         }
-    }
 
-
-    public void StartGettingTrackingData()
-    {
-        completeCalibrating = true;
+        if (InputDeviceTracker.GetRotation(trackerId, out rotation))
+        {
+            transform.localRotation = rotation;
+        }
     }
 
 

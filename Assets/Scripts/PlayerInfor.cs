@@ -24,24 +24,27 @@ public class PlayerInfor : NetworkBehaviour
 
 
     PlayersManager playersManager;
+    
 
     
     public override void OnStartClient()
     {
         base.OnStartClient();
 
-        transform.position = new Vector3(order - 1, 0, 0);
+        StartCoroutine(InitialModelPosition());
         playerModel = Instantiate(playerModelPrefab);
         modelController = playerModel.GetComponent<ModelController>();
         modelController.SetPlayerInforForColliders(this);
-        GetComponent<PlayerController>().ReferIkObjectToReference(playerModel.GetComponent<ModelController>().GetIkObjects());
+        GetComponent<PlayerController>().ReferIkObjectToReference(modelController.GetIkObjects());
+        StartCoroutine(CalibrateModelPose());
         
         if (isLocalPlayer)
         {
             MenuManager.Instance.localPlayer = this;
             modelController.localPlayerCamera = transform.GetChild(0).GetChild(0);
-            CmdSetPlayerDeviceName(SystemInfo.deviceName);
-            CmdCalibrateModelPoseOnClients(NetworkManager.singleton.GetComponent<PlayersManager>().bodyPartsOffsets);
+            CmdSetPlayerDeviceName(SystemInfo.deviceModel);
+            SyncList.instance.CmdAddBodyPartsOffsetsList(NetworkManager.singleton.GetComponent<PlayersManager>().bodyPartsOffsets);
+            //CmdCalibrateModelPoseOnClients(NetworkManager.singleton.GetComponent<PlayersManager>().bodyPartsOffsets);
         }
         else
         {
@@ -49,6 +52,22 @@ public class PlayerInfor : NetworkBehaviour
             StartCoroutine(AddOtherPlayersCanvasList());
             MenuManager.Instance.otherPlayers.Add(gameObject);
         }
+    }
+    IEnumerator InitialModelPosition()
+    {
+        while (order == 0)
+        {
+            yield return null;
+        }
+        transform.position = new Vector3(order - 1, 0, 0);
+    }
+    IEnumerator CalibrateModelPose()
+    {
+        while (SyncList.instance.bodyPartsOffsetsList.Count < order)
+        {
+            yield return null;
+        }
+        modelController.CalibrateModelPose(order);
     }
     IEnumerator AddOtherPlayersCanvasList()
     {
@@ -64,6 +83,7 @@ public class PlayerInfor : NetworkBehaviour
     public void OnDestroy()
     {
         Destroy(playerModel);
+        SyncList.instance.bodyPartsOffsetsList.RemoveAt(order - 1);
     }
 
 
@@ -140,9 +160,9 @@ public class PlayerInfor : NetworkBehaviour
         if (isLocalPlayer)
         {
             PlayerController playerController = GetComponent<PlayerController>();
-            playerController.waistTracker.StartGettingTrackingData();
-            playerController.leftLegTracker.StartGettingTrackingData();
-            playerController.rightLegTracker.StartGettingTrackingData();
+            playerController.waistPose.enabled = true;
+            playerController.leftLegPose.enabled = true;
+            playerController.rightLegPose.enabled = true;
         }
     }
     #endregion
@@ -156,6 +176,9 @@ public class PlayerInfor : NetworkBehaviour
         Destroy(mainCameraOfOtherXRRig.GetComponent<TrackedPoseDriver>());
         Destroy(transform.GetChild(0).GetChild(1).GetComponent<ActionBasedController>());
         Destroy(transform.GetChild(0).GetChild(2).GetComponent<ActionBasedController>());
+        Destroy(transform.GetChild(0).GetChild(3).GetComponent<UltimateTracker>());
+        Destroy(transform.GetChild(0).GetChild(4).GetComponent<UltimateTracker>());
+        Destroy(transform.GetChild(0).GetChild(5).GetComponent<UltimateTracker>());
     }
 
 

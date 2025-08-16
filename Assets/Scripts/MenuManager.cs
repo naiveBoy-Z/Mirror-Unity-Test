@@ -75,7 +75,7 @@ public class MenuManager : MonoBehaviour
         yield return new WaitForSeconds(2);
         GameObject.Find("Player XR Origin (XR Rig)").SetActive(false);
         playersManager.networkAddress = "192.168.0.61";
-        playersManager.StartClient();
+        playersManager.StartHost();
     }
 
 
@@ -300,7 +300,7 @@ public class MenuManager : MonoBehaviour
         cameraOffsetTransform.position = cameraOffsetTransform.position + new Vector3(0, 0, 3);
         //playerModel.transform.localScale = new Vector3(scaleFactor, scaleFactor, scaleFactor);
         playerModel.GetComponent<Animator>().enabled = true;
-        foreach (var ultimateTracker in ultimateTrackers) ultimateTracker.StartGettingTrackingData();
+        ultimateTrackers[0].GetComponent<TrackerPoseIK>().enabled = true;
     }
 
 
