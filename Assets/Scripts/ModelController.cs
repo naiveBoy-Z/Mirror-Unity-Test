@@ -7,7 +7,7 @@ using UnityEngine.InputSystem;
 public class ModelController : MonoBehaviour
 {
     [Header("IK Object")]
-    public GameObject body;
+    public GameObject hipsBone;
     public GameObject headTarget;
     public GameObject leftArmTarget;
     public GameObject leftArmHint;
@@ -33,6 +33,7 @@ public class ModelController : MonoBehaviour
     public Transform gunMuzzle;
     [Header("Sound Effects")]
     public AudioSource audioSource;
+    public List<AudioClip> audioClips;
 
     InputAction pressRightTrigger;
 
@@ -67,7 +68,7 @@ public class ModelController : MonoBehaviour
     {
         List<GameObject> list = new()
         {
-            body,
+            hipsBone,
             headTarget,
             leftArmTarget,
             leftArmHint,
@@ -162,5 +163,10 @@ public class ModelController : MonoBehaviour
         {
             bodyPartCollider.player = infor;
         }
+    }
+
+    public void PlayCollisionSfx(int clip)
+    {
+        audioSource.PlayOneShot(audioClips[clip]);
     }
 }

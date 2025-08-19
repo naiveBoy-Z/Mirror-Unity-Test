@@ -13,9 +13,6 @@ public class ViveController : MonoBehaviour
     public GameObject targetReference;
     public GameObject hintReference;
 
-    private float armLength;
-    private Vector3 hintReferenceOriginalPos;
-
 
     void Update()
     {

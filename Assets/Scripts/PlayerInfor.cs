@@ -9,10 +9,6 @@ using UnityEngine.XR.Interaction.Toolkit;
 
 public class PlayerInfor : NetworkBehaviour
 {
-    [Header("Prefabs")]
-    public GameObject playerModelPrefab;
-    public GameObject playerModel;
-    public ModelController modelController;
     [Header("Player Information Field")]
     [SyncVar] public int order;
     [SyncVar(hook = nameof(OnPlayerNameChanged))] public string playerName;
@@ -21,6 +17,10 @@ public class PlayerInfor : NetworkBehaviour
     [Header("Player's Stats")]
     public int maxHp = 100;
     [SyncVar] public int hp = 100;
+    [Header("Prefabs")]
+    public GameObject playerModelPrefab;
+    public GameObject playerModel;
+    public ModelController modelController;
 
 
     PlayersManager playersManager;
@@ -229,15 +229,16 @@ public class PlayerInfor : NetworkBehaviour
 
 
     [Command(requiresAuthority = false)]
-    public void CmdTakeDamage(int dmg)
+    public void CmdTakeDamage(int dmg, int clip)
     {
-        RpcTakeDamage(dmg);
+        RpcTakeDamage(dmg, clip);
     }
 
     [ClientRpc]
-    public void RpcTakeDamage(int dmg)
+    public void RpcTakeDamage(int dmg, int clip)
     {
         hp -= dmg;
         modelController.UpdateHp(hp, maxHp, isLocalPlayer);
+        modelController.PlayCollisionSfx(clip);
     }
 }

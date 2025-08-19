@@ -24,9 +24,9 @@ public class UIUpdater : NetworkBehaviour
 
 
     [ClientRpc]
-    public void RpcUpdateReadyState(int index, bool on)
+    public void RpcUpdateReadyState(int index, bool ready)
     {
-        MenuManager.Instance.UpdateReadyState(index, on);
+        MenuManager.Instance.UpdateReadyState(index, ready);
     }
 
 

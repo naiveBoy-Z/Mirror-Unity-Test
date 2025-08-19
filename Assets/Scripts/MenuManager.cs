@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.UI;
 using UnityEngine.Windows;
 using UnityEngine.XR;
@@ -31,7 +32,12 @@ public class MenuManager : MonoBehaviour
     public Transform cameraOffsetTransform;
     public List<Transform> playerModelBodyParts = new();
     public List<UltimateTracker> ultimateTrackers = new();
-    [Header("UI in Menu")]
+    [Header("Player")]
+    public PlayerInfor localPlayer;
+    public List<GameObject> otherPlayers;
+    [Header("Manager")]
+    public PlayersManager playersManager;
+    [Header("Calibrator UI")]
     public TextMeshProUGUI txtTrackerConnectionError;
     public GameObject gameName;
     public GameObject pnlPoseCalibrator, pnlNetworkConnector;
@@ -40,11 +46,6 @@ public class MenuManager : MonoBehaviour
     public Image leftTriggerIndicator, rightTriggerIndicator;
     public Sprite triggerPressed, triggerReleased;
     public Image calibrationBackgroundBar, calibrationForegroundBar;
-    [Header("Player")]
-    public PlayerInfor localPlayer;
-    public List<GameObject> otherPlayers;
-    [Header("Manager")]
-    public PlayersManager playersManager;
     [Header("Role Selector UI")]
     public GameObject pnlRoleSelector;
     [Header("Clients List UI")]
@@ -68,13 +69,13 @@ public class MenuManager : MonoBehaviour
 
         isCalibrating = false;
         completeCalibrating = false;
-        StartCoroutine(StartConnection());
+        //StartCoroutine(StartConnection());
     }
     IEnumerator StartConnection()
     {
         yield return new WaitForSeconds(2);
         GameObject.Find("Player XR Origin (XR Rig)").SetActive(false);
-        playersManager.networkAddress = "192.168.0.61";
+        playersManager.networkAddress = "192.168.0.59";
         playersManager.StartHost();
     }
 
@@ -387,7 +388,7 @@ public class MenuManager : MonoBehaviour
         //GameObject.Find("Player XR Origin (XR Rig)").SetActive(false);
         //GameObject.Find("Swat").SetActive(false);
 
-        playersManager.networkAddress = "192.168.0.60";
+        playersManager.networkAddress = "172.20.10.2";
         
         playersManager.StartClient();
         pnlRoleSelector.SetActive(false);
@@ -422,9 +423,9 @@ public class MenuManager : MonoBehaviour
     }
 
 
-    public void UpdateReadyState(int index, bool on)
+    public void UpdateReadyState(int index, bool ready)
     {
-        pnlPlayerList.transform.GetChild(index).GetChild(0).gameObject.SetActive(on);
+        pnlPlayerList.transform.GetChild(index).GetChild(0).gameObject.SetActive(ready);
     }
 
 
