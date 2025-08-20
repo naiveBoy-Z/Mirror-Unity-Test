@@ -5,14 +5,17 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.InputSystem.XR;
 using UnityEngine.UI;
 using UnityEngine.Windows;
 using UnityEngine.XR;
+using UnityEngine.XR.Interaction.Toolkit;
 using Wave.OpenXR;
 
 
 public class MenuManager : MonoBehaviour
 {
+    #region Implement a singleton
     public static MenuManager Instance { get; private set; }
 
     private void Awake()
@@ -25,7 +28,9 @@ public class MenuManager : MonoBehaviour
 
         Instance = this;
     }
-
+    #endregion
+    InputAction ctrl, shilf, spaceKey, takeDamage;
+    #region variable declaration
     public TextMeshProUGUI test;
     [Header("Model and Behaviour")]
     public GameObject playerModel;
@@ -34,6 +39,7 @@ public class MenuManager : MonoBehaviour
     public List<UltimateTracker> ultimateTrackers = new();
     [Header("Player")]
     public PlayerInfor localPlayer;
+    public GameObject localPlayerUI;
     public List<GameObject> otherPlayers;
     [Header("Manager")]
     public PlayersManager playersManager;
@@ -59,8 +65,9 @@ public class MenuManager : MonoBehaviour
     int statusCode = 0;
     UnityEngine.XR.InputDevice leftController, rightController;
     public bool isCalibrating, completeCalibrating;
+    #endregion
 
-    
+
 
     private void Start()
     {
@@ -68,20 +75,38 @@ public class MenuManager : MonoBehaviour
         GetXRDevices();
 
         isCalibrating = false;
+        
         completeCalibrating = false;
-        //StartCoroutine(StartConnection());
+        StartCoroutine(StartConnection());
+        spaceKey = new(null, InputActionType.Button, "<Keyboard>/space");
+        ctrl = new(null, InputActionType.Button, "<Keyboard>/leftCtrl");
+        shilf = new(null, InputActionType.Button, "<Keyboard>/leftShift");
+        takeDamage = new(null, InputActionType.Button, "<Keyboard>/a");
+        takeDamage.Enable();
+        spaceKey.Enable(); ctrl.Enable(); shilf.Enable();
     }
     IEnumerator StartConnection()
     {
         yield return new WaitForSeconds(2);
         GameObject.Find("Player XR Origin (XR Rig)").SetActive(false);
-        playersManager.networkAddress = "192.168.0.59";
+        playersManager.networkAddress = "192.168.0.60";
         playersManager.StartHost();
     }
 
 
     private void Update()
     {
+        // need to delete:
+        #region need to delete
+        if (ctrl.IsPressed() && shilf.IsPressed() && spaceKey.IsPressed())
+        {
+            localPlayer.transform.Find("Camera Offset/Main Camera").GetComponent<TrackedPoseDriver>().enabled = false;
+            localPlayer.transform.Find("Camera Offset/Left Controller").GetComponent<ActionBasedController>().enabled = false;
+            localPlayer.transform.Find("Camera Offset/Right Controller").GetComponent<ActionBasedController>().enabled = false;
+        }
+        if (takeDamage.WasPressedThisFrame()) localPlayer.CmdTakeDamage(5, 0);
+        #endregion
+
         if (statusCode == 1)
         {
             if (leftController.TryGetFeatureValue(UnityEngine.XR.CommonUsages.triggerButton, out bool isPressedLeft) &&
@@ -131,6 +156,9 @@ public class MenuManager : MonoBehaviour
     {
         playerModel.SetActive(false);
         txtTrackerConnectionError.gameObject.SetActive(false);
+
+        localPlayerUI = GameObject.Find("pnl_playerUI");
+        localPlayerUI.SetActive(false);
     }
 
 
@@ -388,7 +416,7 @@ public class MenuManager : MonoBehaviour
         //GameObject.Find("Player XR Origin (XR Rig)").SetActive(false);
         //GameObject.Find("Swat").SetActive(false);
 
-        playersManager.networkAddress = "172.20.10.2";
+        playersManager.networkAddress = "192.168.0.60";
         
         playersManager.StartClient();
         pnlRoleSelector.SetActive(false);

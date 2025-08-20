@@ -1807,15 +1807,15 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  playerModelPrefab: {fileID: 2222046202650532110, guid: 370238a5e27b4ae49b212003743ca0ba, type: 3}
-  playerModel: {fileID: 0}
-  modelController: {fileID: 0}
   order: 0
   playerName: 
   isHost: 0
   deviceName: 
   maxHp: 100
   hp: 100
+  playerModelPrefab: {fileID: 2222046202650532110, guid: 370238a5e27b4ae49b212003743ca0ba, type: 3}
+  playerModel: {fileID: 0}
+  modelController: {fileID: 0}
 --- !u!1 &4872006381160323683
 GameObject:
   m_ObjectHideFlags: 0

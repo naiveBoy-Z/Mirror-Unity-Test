@@ -9,6 +9,7 @@ using UnityEngine.XR.Interaction.Toolkit;
 
 public class PlayerInfor : NetworkBehaviour
 {
+    #region Variable declaration
     [Header("Player Information Field")]
     [SyncVar] public int order;
     [SyncVar(hook = nameof(OnPlayerNameChanged))] public string playerName;
@@ -24,9 +25,9 @@ public class PlayerInfor : NetworkBehaviour
 
 
     PlayersManager playersManager;
-    
+    #endregion
 
-    
+    #region When player object is spawned
     public override void OnStartClient()
     {
         base.OnStartClient();
@@ -40,11 +41,12 @@ public class PlayerInfor : NetworkBehaviour
         
         if (isLocalPlayer)
         {
+            GameObject.Find("MENU CANVAS - Screen Space").GetComponent<Canvas>().worldCamera = transform.GetChild(0).GetChild(0).GetComponent<Camera>();
             MenuManager.Instance.localPlayer = this;
+            MenuManager.Instance.localPlayerUI.SetActive(true);
             modelController.localPlayerCamera = transform.GetChild(0).GetChild(0);
             CmdSetPlayerDeviceName(SystemInfo.deviceModel);
             SyncList.instance.CmdAddBodyPartsOffsetsList(NetworkManager.singleton.GetComponent<PlayersManager>().bodyPartsOffsets);
-            //CmdCalibrateModelPoseOnClients(NetworkManager.singleton.GetComponent<PlayersManager>().bodyPartsOffsets);
         }
         else
         {
@@ -78,7 +80,7 @@ public class PlayerInfor : NetworkBehaviour
 
         MenuManager.Instance.localPlayer.modelController.otherPlayersCanvas.Add(modelController.uiCanvas.transform);
     }
-
+    #endregion
 
     public void OnDestroy()
     {

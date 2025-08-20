@@ -256,6 +256,7 @@ GameObject:
   - component: {fileID: 4204898378317179078}
   - component: {fileID: 4087407826699937385}
   - component: {fileID: 5100690950605515618}
+  - component: {fileID: 8053610761627490813}
   m_Layer: 0
   m_Name: Canvas_Player Stats
   m_TagString: Untagged
@@ -346,6 +347,19 @@ MonoBehaviour:
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 4294967295
+--- !u!114 &8053610761627490813
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3541486249186865551}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bf46fb56580e3884ab04b0546373c2e5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  player: {fileID: 2334382596800747873}
 --- !u!1 &3644746963790497690
 GameObject:
   m_ObjectHideFlags: 0
@@ -505,7 +519,7 @@ MonoBehaviour:
   m_PreserveAspect: 0
   m_FillCenter: 1
   m_FillMethod: 0
-  m_FillAmount: 1
+  m_FillAmount: 0.361
   m_FillClockwise: 1
   m_FillOrigin: 0
   m_UseSpriteMesh: 0

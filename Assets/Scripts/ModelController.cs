@@ -3,6 +3,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.InputSystem;
+using System.Collections;
 
 public class ModelController : MonoBehaviour
 {
@@ -36,12 +37,23 @@ public class ModelController : MonoBehaviour
     public List<AudioClip> audioClips;
 
     InputAction pressRightTrigger;
+    Image localPlayerHpBar;
 
 
     private void Start()
     {
         pressRightTrigger = new InputAction(null, InputActionType.Button, "<ViveWaveController>{RightHand}/triggerPressed");
         pressRightTrigger.Enable();
+        StartCoroutine(GetLocalPlayerHpBar());
+    }
+
+    IEnumerator GetLocalPlayerHpBar()
+    {
+        while (GameObject.Find("img_foregroundBar(local)") == null)
+        {
+            yield return null;
+        }
+        localPlayerHpBar = GameObject.Find("img_foregroundBar(local)").GetComponent<Image>();
     }
 
 
@@ -138,7 +150,11 @@ public class ModelController : MonoBehaviour
 
     public void UpdateHp(int hp, int maxHp, bool isLocalPlayer)
     {
-        if (!isLocalPlayer)
+        if (isLocalPlayer)
+        {
+            localPlayerHpBar.fillAmount = (float)hp / maxHp;
+        }
+        else
         {
             imgHpForegroundBar.fillAmount = (float)hp / maxHp;
         }

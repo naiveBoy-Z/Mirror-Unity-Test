@@ -141,9 +141,7 @@ PlayerSettings:
   visionOSBundleVersion: 1.0
   tvOSBundleVersion: 1.0
   bundleVersion: 0.1
-  preloadedAssets:
-  - {fileID: 11400000, guid: fad7bf7ddbeb9084c9f51dbe883f889f, type: 2}
-  - {fileID: 6786264394238856348, guid: ae4fa9c232c43534a9fc3e574788225f, type: 2}
+  preloadedAssets: []
   metroInputSource: 0
   wsaTransparentSwapchain: 0
   m_HolographicPauseOnTrackingLoss: 1
@@ -870,13 +868,7 @@ PlayerSettings:
   windowsGamepadBackendHint: 0
   cloudProjectId: 874a1169-97fe-469d-9094-8b5314c0da6f
   framebufferDepthMemorylessMode: 0
-  qualitySettingsNames:
-  - Very Low
-  - Low
-  - Medium
-  - High
-  - Very High
-  - Ultra
+  qualitySettingsNames: []
   projectName: My project (1) 2025-07-16_14-37-41
   organizationId: no-unknow
   cloudEnabled: 0
