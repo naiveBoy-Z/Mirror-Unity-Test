@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 using Mirror;
 using UnityEngine.UI;
 using TMPro;
@@ -9,6 +9,7 @@ using UnityEngine.XR.Interaction.Toolkit;
 
 public class PlayerInfor : NetworkBehaviour
 {
+    public TextMeshProUGUI test;
     #region Variable declaration
     [Header("Player Information Field")]
     [SyncVar] public int order;
@@ -38,15 +39,15 @@ public class PlayerInfor : NetworkBehaviour
         modelController.SetPlayerInforForColliders(this);
         GetComponent<PlayerController>().ReferIkObjectToReference(modelController.GetIkObjects());
         StartCoroutine(CalibrateModelPose());
-        
+
         if (isLocalPlayer)
         {
             GameObject.Find("MENU CANVAS - Screen Space").GetComponent<Canvas>().worldCamera = transform.GetChild(0).GetChild(0).GetComponent<Camera>();
             MenuManager.Instance.localPlayer = this;
-            MenuManager.Instance.localPlayerUI.SetActive(true);
+            modelController.player = this;
             modelController.localPlayerCamera = transform.GetChild(0).GetChild(0);
             CmdSetPlayerDeviceName(SystemInfo.deviceModel);
-            SyncList.instance.CmdAddBodyPartsOffsetsList(NetworkManager.singleton.GetComponent<PlayersManager>().bodyPartsOffsets);
+            CmdAddBodyPartsOffsetsList(NetworkManager.singleton.GetComponent<PlayersManager>().bodyPartsOffsets);
         }
         else
         {
@@ -65,7 +66,11 @@ public class PlayerInfor : NetworkBehaviour
     }
     IEnumerator CalibrateModelPose()
     {
-        while (SyncList.instance.bodyPartsOffsetsList.Count < order)
+        while (order == 0)
+        {
+            yield return null;
+        }
+        while (SyncListSingleton.instance.bodyPartsOffsetsList.Count != SyncListSingleton.instance.totalPlayer * 6)
         {
             yield return null;
         }
@@ -85,7 +90,7 @@ public class PlayerInfor : NetworkBehaviour
     public void OnDestroy()
     {
         Destroy(playerModel);
-        SyncList.instance.bodyPartsOffsetsList.RemoveAt(order - 1);
+        SyncListSingleton.instance.bodyPartsOffsetsList.RemoveAt(order - 1);
     }
 
 
@@ -115,58 +120,6 @@ public class PlayerInfor : NetworkBehaviour
         deviceName = newDeviceName;
         if (isLocalPlayer) CmdAddNewPlayerToList(this);
     }
-
-
-    [Command]
-    public void CmdCalibrateModelPoseOnClients(List<float> bodyPartsOffsets)
-    {
-        RpcCalibrateModelPoseOnClients(bodyPartsOffsets);
-    }
-
-    [ClientRpc]
-    public void RpcCalibrateModelPoseOnClients(List<float> bodyPartsOffsets)
-    {
-        List<Transform> bodyPartsTransform = playerModel.GetComponent<ModelController>().GetBodyPartsTransform();
-
-        float armRatio = 8 / 13, forearmRatio = 5 / 13;
-
-        //transform.localScale = new Vector3(bodyPartsOffsets[0], bodyPartsOffsets[0], bodyPartsOffsets[0]);
-        //// body center:
-        //bodyPartsTransform[1].position = bodyPartsTransform[1].position + new Vector3(0, bodyPartsOffsets[1], 0);
-        //// foot:
-        //bodyPartsTransform[2].position = bodyPartsTransform[2].position + new Vector3(0, bodyPartsOffsets[2], 0);
-        //bodyPartsTransform[3].position = bodyPartsTransform[3].position + new Vector3(0, bodyPartsOffsets[2], 0);
-        //bodyPartsTransform[4].position = bodyPartsTransform[4].position + new Vector3(0, bodyPartsOffsets[2], 0);
-        //bodyPartsTransform[5].position = bodyPartsTransform[5].position + new Vector3(0, bodyPartsOffsets[2], 0);
-        //bodyPartsTransform[16].position = bodyPartsTransform[16].position + new Vector3(0, bodyPartsOffsets[2] * 2, 0);
-        //bodyPartsTransform[17].position = bodyPartsTransform[17].position + new Vector3(0, bodyPartsOffsets[2], 0);
-        //bodyPartsTransform[18].position = bodyPartsTransform[18].position + new Vector3(0, bodyPartsOffsets[2] * 2, 0);
-        //bodyPartsTransform[19].position = bodyPartsTransform[19].position + new Vector3(0, bodyPartsOffsets[2], 0);
-        //// upper body:
-        //bodyPartsTransform[6].position = bodyPartsTransform[6].position + new Vector3(0, bodyPartsOffsets[3] / 3, 0);
-        //bodyPartsTransform[7].position = bodyPartsTransform[7].position + new Vector3(0, bodyPartsOffsets[3] / 3, 0);
-        //bodyPartsTransform[8].position = bodyPartsTransform[8].position + new Vector3(0, bodyPartsOffsets[3] / 3, 0);
-        //bodyPartsTransform[9].position = bodyPartsTransform[9].position + new Vector3(0, bodyPartsOffsets[4] / 2, 0);
-        //bodyPartsTransform[10].position = bodyPartsTransform[10].position + new Vector3(0, bodyPartsOffsets[4] / 2, 0);
-        //// arm:
-        //bodyPartsTransform[12].position = bodyPartsTransform[12].position + new Vector3(-bodyPartsOffsets[5] * armRatio, 0, 0);
-        //bodyPartsTransform[13].position = bodyPartsTransform[13].position + new Vector3(-bodyPartsOffsets[5] * forearmRatio, 0, 0);
-        //bodyPartsTransform[14].position = bodyPartsTransform[14].position + new Vector3(bodyPartsOffsets[5] * armRatio, 0, 0);
-        //bodyPartsTransform[15].position = bodyPartsTransform[15].position + new Vector3(bodyPartsOffsets[5] * forearmRatio, 0, 0);
-        //bodyPartsTransform[20].position = bodyPartsTransform[20].position + new Vector3(-bodyPartsOffsets[5] * forearmRatio, bodyPartsOffsets[3], 0);
-        //bodyPartsTransform[21].position = bodyPartsTransform[21].position + new Vector3(-bodyPartsOffsets[5] * forearmRatio, bodyPartsOffsets[3], 0);
-        //bodyPartsTransform[22].position = bodyPartsTransform[22].position + new Vector3(bodyPartsOffsets[5] * forearmRatio, bodyPartsOffsets[3], 0);
-        //bodyPartsTransform[23].position = bodyPartsTransform[23].position + new Vector3(bodyPartsOffsets[5] * forearmRatio, bodyPartsOffsets[3], 0);
-
-        playerModel.GetComponent<Animator>().enabled = true;
-        if (isLocalPlayer)
-        {
-            PlayerController playerController = GetComponent<PlayerController>();
-            playerController.waistPose.enabled = true;
-            playerController.leftLegPose.enabled = true;
-            playerController.rightLegPose.enabled = true;
-        }
-    }
     #endregion
 
 
@@ -181,6 +134,13 @@ public class PlayerInfor : NetworkBehaviour
         Destroy(transform.GetChild(0).GetChild(3).GetComponent<UltimateTracker>());
         Destroy(transform.GetChild(0).GetChild(4).GetComponent<UltimateTracker>());
         Destroy(transform.GetChild(0).GetChild(5).GetComponent<UltimateTracker>());
+    }
+
+
+    [Command]
+    void CmdAddBodyPartsOffsetsList(List<float> bodyPartsOffsets)
+    {
+        SyncListSingleton.instance.AddBodyPartsOffsetsList(bodyPartsOffsets);
     }
 
 
@@ -222,6 +182,7 @@ public class PlayerInfor : NetworkBehaviour
                 if (playersManager.playerReady > 1 && playersManager.playerReady == playersManager.players.Count)
                 {
                     UIUpdater.Instance.RpcDisplayOtherPlayers();
+                    MenuManager.Instance.localPlayerUI.SetActive(true);
                 }
             }
             playersManager.players[index] = data;
@@ -242,5 +203,21 @@ public class PlayerInfor : NetworkBehaviour
         hp -= dmg;
         modelController.UpdateHp(hp, maxHp, isLocalPlayer);
         modelController.PlayCollisionSfx(clip);
+    }
+
+
+    [Command]
+    public void CmdPlayGunSfx()
+    {
+        RpcPlayGunSfx();
+    }
+
+    [ClientRpc]
+    public void RpcPlayGunSfx()
+    {
+        if (!isLocalPlayer)
+        {
+            modelController.audioSource.PlayOneShot(modelController.audioSource.clip);
+        }
     }
 }

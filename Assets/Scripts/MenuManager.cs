@@ -1,15 +1,12 @@
-﻿using DG.Tweening;
-using Mirror;
+﻿using Mirror;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Animations.Rigging;
 using UnityEngine.InputSystem;
-using UnityEngine.InputSystem.XR;
 using UnityEngine.UI;
-using UnityEngine.Windows;
 using UnityEngine.XR;
-using UnityEngine.XR.Interaction.Toolkit;
 using Wave.OpenXR;
 
 
@@ -29,9 +26,8 @@ public class MenuManager : MonoBehaviour
         Instance = this;
     }
     #endregion
-    InputAction ctrl, shilf, spaceKey, takeDamage;
-    #region variable declaration
     public TextMeshProUGUI test;
+    #region variable declaration
     [Header("Model and Behaviour")]
     public GameObject playerModel;
     public Transform cameraOffsetTransform;
@@ -71,42 +67,32 @@ public class MenuManager : MonoBehaviour
 
     private void Start()
     {
-        HideObjectsAndDisableComponentsAtStartUp();
+        HideObjectsAndDisableComponentsOnStartUp();
         GetXRDevices();
 
         isCalibrating = false;
-        
         completeCalibrating = false;
-        StartCoroutine(StartConnection());
-        spaceKey = new(null, InputActionType.Button, "<Keyboard>/space");
-        ctrl = new(null, InputActionType.Button, "<Keyboard>/leftCtrl");
-        shilf = new(null, InputActionType.Button, "<Keyboard>/leftShift");
-        takeDamage = new(null, InputActionType.Button, "<Keyboard>/a");
-        takeDamage.Enable();
-        spaceKey.Enable(); ctrl.Enable(); shilf.Enable();
+
+        // Test multiplayer in Editor:
+        //StartCoroutine(StartConnection());
     }
     IEnumerator StartConnection()
     {
+        NetworkManager.singleton.GetComponent<PlayersManager>().bodyPartsOffsets = new List<float>() { 1, 0,0,0,0,0  };
         yield return new WaitForSeconds(2);
-        GameObject.Find("Player XR Origin (XR Rig)").SetActive(false);
-        playersManager.networkAddress = "192.168.0.60";
+        playersManager.networkAddress = "172.20.10.4";
         playersManager.StartHost();
+        yield return new WaitForSeconds(3);
+        btnCalibrate.SetActive(false);
+        pnlNetworkConnector.SetActive(true);
+        pnlRoleSelector.SetActive(false);
+        pnlLobby.SetActive(true);
+        ReadyToPlay();
     }
 
 
     private void Update()
     {
-        // need to delete:
-        #region need to delete
-        if (ctrl.IsPressed() && shilf.IsPressed() && spaceKey.IsPressed())
-        {
-            localPlayer.transform.Find("Camera Offset/Main Camera").GetComponent<TrackedPoseDriver>().enabled = false;
-            localPlayer.transform.Find("Camera Offset/Left Controller").GetComponent<ActionBasedController>().enabled = false;
-            localPlayer.transform.Find("Camera Offset/Right Controller").GetComponent<ActionBasedController>().enabled = false;
-        }
-        if (takeDamage.WasPressedThisFrame()) localPlayer.CmdTakeDamage(5, 0);
-        #endregion
-
         if (statusCode == 1)
         {
             if (leftController.TryGetFeatureValue(UnityEngine.XR.CommonUsages.triggerButton, out bool isPressedLeft) &&
@@ -152,12 +138,12 @@ public class MenuManager : MonoBehaviour
     }
 
 
-    private void HideObjectsAndDisableComponentsAtStartUp()
+    private void HideObjectsAndDisableComponentsOnStartUp()
     {
         playerModel.SetActive(false);
         txtTrackerConnectionError.gameObject.SetActive(false);
 
-        localPlayerUI = GameObject.Find("pnl_playerUI");
+        //localPlayerUI = GameObject.Find("pnl_playerUI");
         localPlayerUI.SetActive(false);
     }
 
@@ -242,7 +228,7 @@ public class MenuManager : MonoBehaviour
             txtTrackerConnectionError.gameObject.SetActive(true);
             txtTrackerConnectionError.text = $"⚠ Not found {notConnectingTrackerList}\nInspect all trackers thoroughly and calibrate again!";
         }
-        else // calibrate model's pose
+        else
         {
             txtTrackerConnectionError.gameObject.SetActive(false);
             DisplayObjectInCalibratingPosePhase();
@@ -294,32 +280,32 @@ public class MenuManager : MonoBehaviour
             yield return null;
         }
 
-        ////body center:
-        //playerModelBodyParts[1].position = playerModelBodyParts[1].position + new Vector3(0, hipOffset, 0);
-        //// foot:
-        //playerModelBodyParts[2].position = playerModelBodyParts[2].position + new Vector3(0, footOffset, 0);
-        //playerModelBodyParts[3].position = playerModelBodyParts[3].position + new Vector3(0, footOffset, 0);
-        //playerModelBodyParts[4].position = playerModelBodyParts[4].position + new Vector3(0, footOffset, 0);
-        //playerModelBodyParts[5].position = playerModelBodyParts[5].position + new Vector3(0, footOffset, 0);
-        //playerModelBodyParts[16].position = playerModelBodyParts[16].position + new Vector3(0, footOffset * 2, 0);
-        //playerModelBodyParts[17].position = playerModelBodyParts[17].position + new Vector3(0, footOffset, 0);
-        //playerModelBodyParts[18].position = playerModelBodyParts[18].position + new Vector3(0, footOffset * 2, 0);
-        //playerModelBodyParts[19].position = playerModelBodyParts[19].position + new Vector3(0, footOffset, 0);
-        //// upper body:
-        //playerModelBodyParts[6].position = playerModelBodyParts[6].position + new Vector3(0, spineOffset / 3, 0);
-        //playerModelBodyParts[7].position = playerModelBodyParts[7].position + new Vector3(0, spineOffset / 3, 0);
-        //playerModelBodyParts[8].position = playerModelBodyParts[8].position + new Vector3(0, spineOffset / 3, 0);
-        //playerModelBodyParts[9].position = playerModelBodyParts[9].position + new Vector3(0, headOffset / 2, 0);
-        //playerModelBodyParts[10].position = playerModelBodyParts[10].position + new Vector3(0, headOffset / 2, 0);
-        //// arm:
-        //playerModelBodyParts[12].position = playerModelBodyParts[12].position + new Vector3(-armOffset * armRatio, 0, 0);
-        //playerModelBodyParts[13].position = playerModelBodyParts[13].position + new Vector3(-armOffset * forearmRatio, 0, 0);
-        //playerModelBodyParts[14].position = playerModelBodyParts[14].position + new Vector3(armOffset * armRatio, 0, 0);
-        //playerModelBodyParts[15].position = playerModelBodyParts[15].position + new Vector3(armOffset * forearmRatio, 0, 0);
-        //playerModelBodyParts[20].position = playerModelBodyParts[20].position + new Vector3(-armOffset * forearmRatio, spineOffset, 0);
-        //playerModelBodyParts[21].position = playerModelBodyParts[21].position + new Vector3(-armOffset * forearmRatio, spineOffset, 0);
-        //playerModelBodyParts[22].position = playerModelBodyParts[22].position + new Vector3(armOffset * forearmRatio, spineOffset, 0);
-        //playerModelBodyParts[23].position = playerModelBodyParts[23].position + new Vector3(armOffset * forearmRatio, spineOffset, 0);
+        //body center:
+        playerModelBodyParts[1].position = playerModelBodyParts[1].position + new Vector3(0, hipOffset, 0);
+        // foot:
+        playerModelBodyParts[2].position = playerModelBodyParts[2].position + new Vector3(0, footOffset, 0);
+        playerModelBodyParts[3].position = playerModelBodyParts[3].position + new Vector3(0, footOffset, 0);
+        playerModelBodyParts[4].position = playerModelBodyParts[4].position + new Vector3(0, footOffset, 0);
+        playerModelBodyParts[5].position = playerModelBodyParts[5].position + new Vector3(0, footOffset, 0);
+        playerModelBodyParts[16].position = playerModelBodyParts[16].position + new Vector3(0, footOffset * 2, 0);
+        playerModelBodyParts[17].position = playerModelBodyParts[17].position + new Vector3(0, footOffset, 0);
+        playerModelBodyParts[18].position = playerModelBodyParts[18].position + new Vector3(0, footOffset * 2, 0);
+        playerModelBodyParts[19].position = playerModelBodyParts[19].position + new Vector3(0, footOffset, 0);
+        // upper body:
+        playerModelBodyParts[6].position = playerModelBodyParts[6].position + new Vector3(0, spineOffset / 3, 0);
+        playerModelBodyParts[7].position = playerModelBodyParts[7].position + new Vector3(0, spineOffset / 3, 0);
+        playerModelBodyParts[8].position = playerModelBodyParts[8].position + new Vector3(0, spineOffset / 3, 0);
+        playerModelBodyParts[9].position = playerModelBodyParts[9].position + new Vector3(0, headOffset / 2, 0);
+        playerModelBodyParts[10].position = playerModelBodyParts[10].position + new Vector3(0, headOffset / 2, 0);
+        // arm:
+        playerModelBodyParts[12].position = playerModelBodyParts[12].position + new Vector3(-armOffset * armRatio, 0, 0);
+        playerModelBodyParts[13].position = playerModelBodyParts[13].position + new Vector3(-armOffset * forearmRatio, 0, 0);
+        playerModelBodyParts[14].position = playerModelBodyParts[14].position + new Vector3(armOffset * armRatio, 0, 0);
+        playerModelBodyParts[15].position = playerModelBodyParts[15].position + new Vector3(armOffset * forearmRatio, 0, 0);
+        playerModelBodyParts[20].position = playerModelBodyParts[20].position + new Vector3(-armOffset * forearmRatio, spineOffset, 0);
+        playerModelBodyParts[21].position = playerModelBodyParts[21].position + new Vector3(-armOffset * forearmRatio, spineOffset, 0);
+        playerModelBodyParts[22].position = playerModelBodyParts[22].position + new Vector3(armOffset * forearmRatio, spineOffset, 0);
+        playerModelBodyParts[23].position = playerModelBodyParts[23].position + new Vector3(armOffset * forearmRatio, spineOffset, 0);
 
         NetworkManager.singleton.GetComponent<PlayersManager>().bodyPartsOffsets = new List<float> {
             scaleFactor, hipOffset, footOffset,
@@ -327,8 +313,9 @@ public class MenuManager : MonoBehaviour
         };
 
         cameraOffsetTransform.position = cameraOffsetTransform.position + new Vector3(0, 0, 3);
-        //playerModel.transform.localScale = new Vector3(scaleFactor, scaleFactor, scaleFactor);
+        playerModel.transform.localScale = new Vector3(scaleFactor, scaleFactor, scaleFactor);
         playerModel.GetComponent<Animator>().enabled = true;
+        playerModel.GetComponent<RigBuilder>().enabled = true;
         ultimateTrackers[0].GetComponent<TrackerPoseIK>().enabled = true;
     }
 
@@ -385,7 +372,6 @@ public class MenuManager : MonoBehaviour
     }
 
 
-
     public void VibrateController(int id)
     {
         if (id == 0)
@@ -404,8 +390,6 @@ public class MenuManager : MonoBehaviour
     #region Network Connect UI
     public void StartHost()
     {
-        //GameObject.Find("Player XR Origin (XR Rig)").SetActive(false);
-        //GameObject.Find("Swat").SetActive(false);
         playersManager.StartHost();
         pnlRoleSelector.SetActive(false);
         pnlLobby.SetActive(true);
@@ -413,11 +397,7 @@ public class MenuManager : MonoBehaviour
 
     public void StartClient()
     {
-        //GameObject.Find("Player XR Origin (XR Rig)").SetActive(false);
-        //GameObject.Find("Swat").SetActive(false);
-
-        playersManager.networkAddress = "192.168.0.60";
-        
+        playersManager.networkAddress = "172.20.10.2";
         playersManager.StartClient();
         pnlRoleSelector.SetActive(false);
         pnlLobby.SetActive(true);
@@ -459,7 +439,6 @@ public class MenuManager : MonoBehaviour
 
     public void UpdatePlayerList(List<PlayerData> players)
     {
-        test.text = players.Count.ToString();
         foreach (Transform child in pnlPlayerList.transform)
         {
             Destroy(child.gameObject);
@@ -487,10 +466,11 @@ public class MenuManager : MonoBehaviour
         GameObject.Find("Player XR Origin (XR Rig)").SetActive(false);
         GameObject.Find("Swat").SetActive(false);
 
-        localPlayer.gameObject.SetActive(true);
+        localPlayer.transform.GetChild(0).GetChild(0).gameObject.SetActive(true);
+        localPlayer.playerModel.SetActive(true);
         foreach (var player in otherPlayers)
         {
-            player.SetActive(true);
+            player.GetComponent<PlayerInfor>().playerModel.SetActive(true);
         }
 
         for (int i = otherPlayers.Count - 1; i >= 0; i--)

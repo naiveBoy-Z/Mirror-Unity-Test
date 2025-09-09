@@ -26,6 +26,7 @@ public class PlayersManager : NetworkManager
 
         PlayerInfor player = conn.identity.GetComponent<PlayerInfor>();
         player.order = NetworkServer.connections.Count;
+        SyncListSingleton.instance.totalPlayer = player.order;
         if (NetworkServer.connections.Count == 1)
         {
             player.playerName = "Player 1 (Host)";
@@ -45,6 +46,7 @@ public class PlayersManager : NetworkManager
         int index = players.FindIndex(p => p.playerName == pName);
         if (players[index].isReady) playerReady--;
         players.RemoveAt(index);
+        SyncListSingleton.instance.totalPlayer--;
 
         base.OnServerDisconnect(conn);
 

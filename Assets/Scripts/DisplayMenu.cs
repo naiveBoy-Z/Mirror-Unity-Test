@@ -7,12 +7,12 @@ public class DisplayMenu : MonoBehaviour
     [Tooltip("Distance from the player's camera to Menu UI along the Z-axis")]
     public float distance;
 
-    Transform playerHead;
+    public Transform playerHead;
 
 
     private void Start()
     {
-        playerHead = GameObject.Find("Head Target Reference").transform;
+        //playerHead = GameObject.Find("Head Target Reference").transform;
     }
 
 
